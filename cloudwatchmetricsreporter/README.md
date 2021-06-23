@@ -1,8 +1,10 @@
-In this exmaple, we will use Apache Hudi's [UserDefinedMetricsReporter](https://hudi.apache.org/docs/metrics.html#userdefinedmetricsreporter) to push Hudi metrics to Amazon CloudWatch. 
+In this example, we will use Apache Hudi's [UserDefinedMetricsReporter](https://hudi.apache.org/docs/metrics.html#userdefinedmetricsreporter) to push Hudi metrics to Amazon CloudWatch. 
 
 The CloudWatchMetricsReporter class extends the AbstractUserDefinedMetricsReporter class and pushed the metrics to Cloudwatch. You can change the implementation to say push only certain metrics or change the data types of the metrics e.g. report insertTime in seconds etc.
 
 ## Step 1: Build CloudWatchMetricsReporter
+
+We can build this class on EMR:
 
 ```
 $> javac -cp /usr/lib/hudi/hudi-utilities-bundle.jar:/usr/lib/hudi/cli/lib/log4j-1.2.17.jar:/usr/lib/hudi/cli/lib/metrics-core-4.1.1.jar:/usr/share/aws/aws-java-sdk/aws-java-sdk-bundle-1.11.977.jar CloudWatchMetricsReporter.java
