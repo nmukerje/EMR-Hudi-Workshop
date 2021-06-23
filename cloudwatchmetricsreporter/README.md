@@ -34,5 +34,6 @@ hoodie.metrics.reporter.class=custom.CloudWatchMetricsReporter
 
 Once setup, you should be able to view metrics in Cloudwatch:
 
-![cloudwatch_dashboard](/Hudi_Streaming_Metrics_Dashboard.png)
+<img src="https://raw.githubusercontent.com/nmukerje/EMR-Hudi-Workshop/111d6f6bff6dfccb95343241fbfccace702d3555/cloudwatchmetricsreporter/Hudi_Streaming_Metrics_Dashboard.png.png" alt="Hudi_Streaming_Metrics_Dashboard" width="400"/>
+
 
