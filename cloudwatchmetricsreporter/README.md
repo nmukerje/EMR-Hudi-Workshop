@@ -32,7 +32,7 @@ spark-submit --jars hdfs:///httpcore-4.4.11.jar,hdfs:///httpclient-4.5.9.jar,hdf
 Hudi-Spark-Streaming-Ingestion.py
 ```
 
-## Step 3: Set Hudi Config
+## Step 3: Set Hudi Config Properties
 
 Set the Hudi properties below to enable the metrics reporter:
 
