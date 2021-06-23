@@ -1,6 +1,6 @@
 In this example, we will use Apache Hudi's [UserDefinedMetricsReporter](https://hudi.apache.org/docs/metrics.html#userdefinedmetricsreporter) to push Hudi metrics to Amazon CloudWatch. 
 
-The CloudWatchMetricsReporter class extends the AbstractUserDefinedMetricsReporter class and pushed the metrics to Cloudwatch. You can change the implementation to say push only certain metrics or change the data types of the metrics e.g. report insertTime in seconds etc.
+The CloudWatchMetricsReporter class extends the AbstractUserDefinedMetricsReporter class and pushes the metrics to Cloudwatch in the same region. You can change the implementation to say push only certain metrics or change the data types of the metrics e.g. report insertTime in seconds etc.
 
 Here is an example of how the metrics will be structured in Cloudwatch:
 
