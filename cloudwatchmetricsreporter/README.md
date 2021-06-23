@@ -4,10 +4,12 @@ The CloudWatchMetricsReporter class extends the AbstractUserDefinedMetricsReport
 
 Here is an example of how the metrics will be structured in Cloudwatch:
 
+```
 Namespace : Hudi
 Dimension ; <Hudi tablename>
 Metric Key : commit.totalInsertRecordsWritten
 Matric Value : 16292
+```
 
 ## Step 1: Build CloudWatchMetricsReporter
 
