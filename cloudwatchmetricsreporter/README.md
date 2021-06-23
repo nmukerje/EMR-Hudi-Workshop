@@ -2,6 +2,13 @@ In this example, we will use Apache Hudi's [UserDefinedMetricsReporter](https://
 
 The CloudWatchMetricsReporter class extends the AbstractUserDefinedMetricsReporter class and pushed the metrics to Cloudwatch. You can change the implementation to say push only certain metrics or change the data types of the metrics e.g. report insertTime in seconds etc.
 
+Here is an example of how the metrics will be structured in Cloudwatch:
+
+Namespace : Hudi
+Dimension ; <Hudi tablename>
+Metric Key : commit.totalInsertRecordsWritten
+Matric Value : 16292
+
 ## Step 1: Build CloudWatchMetricsReporter
 
 We can build this class on EMR:
