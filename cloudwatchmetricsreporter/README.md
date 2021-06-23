@@ -25,8 +25,14 @@ Hudi-Spark-Streaming-Ingestion.py
 
 ## Step 3: Set Hudi Config
 
+Set the Hudi properties below to enable the metrics reporter:
+
 ```
 hoodie.metrics.on=true
 hoodie.metrics.reporter.class=custom.CloudWatchMetricsReporter
 ```
+
+Once setup, you should be able to view metrics in Cloudwatch:
+
+![cloudwatch_dashboard](/Hudi_Streaming_Metrics_Dashboard.png)
 
