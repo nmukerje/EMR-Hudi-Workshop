@@ -11,7 +11,7 @@ Metric Key : commit.totalInsertRecordsWritten
 Matric Value : 16292
 ```
 
-## Step 1: Build CloudWatchMetricsReporter
+## Step 1: Build the CloudWatchMetricsReporter jar
 
 We can build this class on EMR:
 
@@ -21,7 +21,7 @@ $> cp CloudWatchMetricsReporter.class custom/
 $> jar -cvf cwmetricsreporter.jar custom/CloudWatchMetricsReporter.class
 ```
 
-## Step 2: Add CloudWatchMetricsReporter to Hudi classpath
+## Step 2: Add the jar to Hudi classpath
 
 e.g. 
 
@@ -34,9 +34,9 @@ spark-submit --jars hdfs:///httpcore-4.4.11.jar,hdfs:///httpclient-4.5.9.jar,hdf
 Hudi-Spark-Streaming-Ingestion.py
 ```
 
-## Step 3: Set Hudi Config Properties
+## Step 3: Set the Hudi Config Properties
 
-Set the Hudi properties below to enable the metrics reporter:
+Set the Hudi properties below to enable the metrics reporter on writes:
 
 ```
 hoodie.metrics.on=true
