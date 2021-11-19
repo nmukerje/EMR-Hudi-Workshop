@@ -1,4 +1,4 @@
-name := "Spark-Structured-Streaming-Examples"
+name := "Spark-Structured-Streaming-Hudi"
 
 version := "1.0"
 scalaVersion := "2.11.12"
@@ -25,6 +25,7 @@ assemblyExcludedJars in assembly := {
     val cp = (fullClasspath in assembly).value
     cp filter { f =>
       f.data.getName.contains("spark-core") ||
+      f.data.getName.contains("spark-sql") ||
       f.data.getName.contains("hudi-spark-bundle_2.11")||
       f.data.getName.contains("spark-streaming-kafka-0-10_2.11")
     }

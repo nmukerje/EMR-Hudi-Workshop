@@ -4,16 +4,14 @@ import org.apache.hudi.config.HoodieWriteConfig
 import org.apache.hudi.hive.MultiPartKeysValueExtractor
 import org.apache.hudi.DataSourceWriteOptions
 import org.apache.spark.sql.types._
-import org.apache.spark.sql.functions.{col,from_json}
+import org.apache.spark.sql.functions._
 import org.apache.spark.sql.{DataFrame, Row, SaveMode}
 import org.apache.spark.sql.catalyst.encoders.RowEncoder
-import org.apache.spark.sql.{DataFrame, Row, SaveMode}
-import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.{LongType, StringType, StructField, StructType}
 import org.apache.spark.sql.SparkSession
 import org.apache.log4j.Logger
 
-object SparkKafkaConsumerHudiProcessorCOW {
+object SparkKafkaConsumerHudiProcessorMOR {
 
   def main(args: Array[String]): Unit = {
     
@@ -33,7 +31,7 @@ object SparkKafkaConsumerHudiProcessorCOW {
     val kafkaBootstrap=args(1)
     val topics = Array(args(2))
     val dataPath=s"s3://$s3_bucket/dms-full-load-path/salesdb/SALES_ORDER_DETAIL/LOAD*"
-    val hudiTableName = "sales_order_detail_hudi_cow"
+    val hudiTableName = "sales_order_detail_hudi_mor"
     val hudiTableRecordKey = "record_key"
     val hudiTablePartitionKey = "partition_key"
     val hudiTablePrecombineKey = "order_date"
@@ -59,8 +57,21 @@ object SparkKafkaConsumerHudiProcessorCOW {
                 parDF = parDF.withColumn("year",year($"order_date").cast(StringType)).withColumn("month",month($"order_date").cast(StringType))
                 parDF = parDF.withColumn(hudiTablePartitionKey,concat(lit("year="),$"year",lit("/month="),$"month"))
                 parDF.printSchema()
-                parDF.select("record_key","quantity").show()
-                parDF.write.format("org.apache.hudi").option("hoodie.datasource.write.table.type", DataSourceWriteOptions.COW_STORAGE_TYPE_OPT_VAL).option(DataSourceWriteOptions.RECORDKEY_FIELD_OPT_KEY, hudiTableRecordKey).option(DataSourceWriteOptions.PARTITIONPATH_FIELD_OPT_KEY, hudiTablePartitionKey).option(HoodieWriteConfig.TABLE_NAME, hudiTableName).option(DataSourceWriteOptions.OPERATION_OPT_KEY, DataSourceWriteOptions.UPSERT_OPERATION_OPT_VAL).option(DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY, hudiTablePrecombineKey).option(DataSourceWriteOptions.HIVE_SYNC_ENABLED_OPT_KEY, "true").option(DataSourceWriteOptions.HIVE_TABLE_OPT_KEY,hudiTableName).option(DataSourceWriteOptions.HIVE_PARTITION_FIELDS_OPT_KEY, hudiHiveTablePartitionKey).option("hoodie.datasource.hive_sync.assume_date_partitioning", "false").option(DataSourceWriteOptions.HIVE_PARTITION_EXTRACTOR_CLASS_OPT_KEY, classOf[MultiPartKeysValueExtractor].getName).mode("append").save(hudiTablePath);
+                parDF.select("month","record_key","quantity").show()
+                parDF.write.format("org.apache.hudi")
+                      .option("hoodie.datasource.write.table.type", DataSourceWriteOptions.MOR_STORAGE_TYPE_OPT_VAL)
+                      .option(DataSourceWriteOptions.RECORDKEY_FIELD_OPT_KEY, hudiTableRecordKey)
+                      .option(DataSourceWriteOptions.PARTITIONPATH_FIELD_OPT_KEY, hudiTablePartitionKey)
+                      .option(HoodieWriteConfig.TABLE_NAME, hudiTableName)
+                      .option(DataSourceWriteOptions.OPERATION_OPT_KEY, DataSourceWriteOptions.UPSERT_OPERATION_OPT_VAL)
+                      .option(DataSourceWriteOptions.PRECOMBINE_FIELD_OPT_KEY, hudiTablePrecombineKey)
+                      .option(DataSourceWriteOptions.HIVE_SYNC_ENABLED_OPT_KEY, "true")
+                      .option(DataSourceWriteOptions.HIVE_TABLE_OPT_KEY,hudiTableName)
+                      .option(DataSourceWriteOptions.HIVE_PARTITION_FIELDS_OPT_KEY, hudiHiveTablePartitionKey)
+                      .option("hoodie.datasource.hive_sync.assume_date_partitioning", "false")
+                      .option(DataSourceWriteOptions.HIVE_PARTITION_EXTRACTOR_CLASS_OPT_KEY, classOf[MultiPartKeysValueExtractor].getName)
+                      .mode("append")
+                      .save(hudiTablePath);
             })
     }}.option("checkpointLocation", checkpoint_path).start()
    
