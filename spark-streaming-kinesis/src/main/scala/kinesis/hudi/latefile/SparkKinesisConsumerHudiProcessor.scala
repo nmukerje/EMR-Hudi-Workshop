@@ -1,4 +1,4 @@
-package kinesis.hudi
+package kinesis.hudi.latefile
 
 import org.apache.hudi.config.HoodieWriteConfig
 import org.apache.hudi.hive.MultiPartKeysValueExtractor
@@ -14,8 +14,15 @@ import org.apache.spark.storage.StorageLevel
 import org.apache.spark.streaming.kinesis.KinesisInputDStream
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.streaming.kinesis.KinesisInitialPositions
+import java.util.Date
+import java.text.SimpleDateFormat
+
 
 object SparkKinesisConsumerHudiProcessor {
+
+  def epochToDate(epochMillis: String): Date = {
+    new Date(Long.valueOf(epochMillis))
+} 
 
   def main(args: Array[String]): Unit = {
     
@@ -30,26 +37,25 @@ object SparkKinesisConsumerHudiProcessor {
     
     import spark.implicits._
 
-    val s3_bucket=args(0)//"hudi-workshop--2"//
-    val streamName=args(1)//"hudi-stream-data"//
-    val region=args(2)//"us-west-2"//
-    val tableType=args(3)//"COW"//
-    var hudiTableName = "sales_order_detail_hudi_cow"
+    val s3_bucket="akshaya-firehose-test"//args(0)//
+    val streamName="hudi-stream-ingest"//args(1)//
+    val region="us-west-2"//args(2)//
+    val tableType="COW"//args(3)//
+    var hudiTableName = "hudi_trade_info_cow"
     var dsWriteOptionType=DataSourceWriteOptions.COW_STORAGE_TYPE_OPT_VAL
     if(tableType.equals("COW")){
-       hudiTableName = "sales_order_detail_hudi_cow"
+       hudiTableName = "hudi_trade_info_cow"
        dsWriteOptionType=DataSourceWriteOptions.COW_STORAGE_TYPE_OPT_VAL
     }else if (tableType.equals("MOR")){
-      hudiTableName = "sales_order_detail_hudi_mor"
+      hudiTableName = "hudi_trade_info_mor"
       dsWriteOptionType=DataSourceWriteOptions.MOR_STORAGE_TYPE_OPT_VAL
     }
 
-    val dataPath=s"s3://$s3_bucket/dms-full-load-path/salesdb/SALES_ORDER_DETAIL/LOAD*"
     val hudiTableRecordKey = "record_key"
     val hudiTablePartitionKey = "partition_key"
-    val hudiTablePrecombineKey = "order_date"
+    val hudiTablePrecombineKey = "trade_datetime"
     val hudiTablePath = s"s3://$s3_bucket/hudi/" + hudiTableName
-    val hudiHiveTablePartitionKey = "year,month"
+    val hudiHiveTablePartitionKey = "day,hour"
     val checkpoint_path=s"s3://$s3_bucket/kinesis-stream-data-checkpoint/"
     val endpointUrl=s"https://kinesis.$region.amazonaws.com"
 
@@ -60,33 +66,27 @@ object SparkKinesisConsumerHudiProcessor {
                     .option("startingposition", "TRIM_HORIZON")
                     .option("endpointUrl", endpointUrl)
                     .load())
- /** {  "Op": "U",  "LINE_ID": 122778,  "LINE_NUMBER": 1,  "ORDER_ID": 22778,
-  "PRODUCT_ID": 493,  "QUANTITY": 61,  "UNIT_PRICE": 24,  "DISCOUNT": 0,
-  "SUPPLY_COST": 10,  "TAX": 0,  "ORDER_DATE": "2015-08-29"}
+ /** {"tradeId":"211119210207735","symbol":"INFY","quantity":"41",
+ "price":"41","timestamp":1637335954,"description":"Traded o",
+ "traderName":"INFY trader","traderFirm":"firm"}
  */
     val decimalType = DataTypes.createDecimalType(38, 10)
     val dataSchema=StructType(Array(
-        StructField("LINE_ID",IntegerType,true),
-        StructField("LINE_NUMBER",IntegerType,true),
-        StructField("ORDER_ID",IntegerType,true),
-        StructField("PRODUCT_ID",IntegerType,true),
-        StructField("QUANTITY",IntegerType,true),
-        StructField("UNIT_PRICE",decimalType,true),
-        StructField("DISCOUNT",decimalType,true),
-        StructField("SUPPLY_COST",decimalType,true),
-        StructField("TAX",decimalType,true),
-        StructField("ORDER_DATE",DateType,true)
+        StructField("tradeId",StringType,true),
+        StructField("symbol",StringType,true),
+        StructField("quantity",StringType,true),
+        StructField("price",StringType,true),
+        StructField("timestamp",StringType,true),
+        StructField("description",StringType,true),
+        StructField("traderName",StringType,true),
+        StructField("traderFirm",StringType,true)
       ))
-    val schema= StructType(Array(
-         StructField("data",dataSchema,true),
-         StructField("metadata",org.apache.spark.sql.types.MapType(StringType, StringType),true)
-      ))
+  
     
 
     val jsonDF=(streamingInputDF.selectExpr("CAST(data AS STRING)").as[(String)]
-                .withColumn("jsonData",from_json(col("data"),schema))
-                .drop("jsonData.metadata")
-                .select(col("jsonData.data.*")))
+                .withColumn("jsonData",from_json(col("data"),dataSchema))
+                .select(col("jsonData.*")))
 
     
     jsonDF.printSchema()
@@ -94,16 +94,18 @@ object SparkKinesisConsumerHudiProcessor {
                
                 var parDF=batchDF 
                 parDF=parDF.select(parDF.columns.map(x => col(x).as(x.toLowerCase)): _*)
-                parDF=parDF.filter(parDF.col("order_date").isNotNull) 
+                parDF=parDF.filter(parDF.col("tradeId").isNotNull) 
                 parDF.printSchema()
                 parDF.show()   
-                parDF = parDF.withColumn(hudiTableRecordKey, concat(col("order_id"), lit("#"), col("line_id")))
-                parDF = parDF.withColumn("order_date", parDF("order_date").cast(DateType))
-                parDF = parDF.withColumn("year",year($"order_date").cast(StringType)).withColumn("month",month($"order_date").cast(StringType))
-                parDF = parDF.withColumn(hudiTablePartitionKey,concat(lit("year="),$"year",lit("/month="),$"month"))
+                parDF = parDF.withColumn(hudiTableRecordKey, concat(col("tradeId"), lit("#"), col("timestamp")))
+
+                //from_unixtime(stackoverflow_Tags.col("creationDate").divide(1000))
+                parDF = parDF.withColumn("trade_datetime", from_unixtime(parDF.col("timestamp")))
+                parDF = parDF.withColumn("day",dayofmonth($"trade_datetime").cast(StringType)).withColumn("hour",hour($"trade_datetime").cast(StringType))
+                parDF = parDF.withColumn(hudiTablePartitionKey,concat(lit("day="),$"day",lit("/hour="),$"hour"))
                 parDF.printSchema()
                 if(!parDF.rdd.isEmpty){
-                  parDF.select("month","record_key","quantity").show()
+                  parDF.select("day",hudiTableRecordKey,"quantity").show()
                   parDF.write.format("org.apache.hudi")
                         .option("hoodie.datasource.write.table.type", dsWriteOptionType)
                         .option(DataSourceWriteOptions.RECORDKEY_FIELD_OPT_KEY, hudiTableRecordKey)
