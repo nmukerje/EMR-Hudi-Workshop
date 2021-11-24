@@ -1,0 +1,34 @@
+{
+  "executionRoleArn": "arn:aws:iam::799223504601:role/ecs-ec2-cluster-ECSTaskExecutionRole-1A5AFCYJ6VLL3",
+  "containerDefinitions": [
+    {
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/kinesis-producer",
+          "awslogs-region": "ap-south-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "portMappings": [],
+      "cpu": 0,
+      "environment": [],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "image": "799223504601.dkr.ecr.ap-south-1.amazonaws.com/kinesis-consumers/kinesis-producer:latest",
+      "essential": true,
+      "name": "kinesis-producer"
+    }
+  ],
+  "placementConstraints": [],
+  "memory": "1024",
+  "taskRoleArn": "arn:aws:iam::799223504601:role/kcl-consumer-ecs",
+  "family": "kinesis-producer",
+  
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "networkMode": "awsvpc",
+  "cpu": "512",
+  "volumes": []
+}

@@ -1,0 +1,1 @@
+{"tradeId":"DATE_yyMMddHHmmRANDOM_INT5","symbol":"RANDOM_symbols","quantity":"RANDOM_INT2","price":"RANDOM_INT2","timestamp":RANDOM_EPOCH,"description":"Traded on DATE_STRING","traderName":"RANDOM_symbols trader","traderFirm":"RANDOM_symbols firm"}
