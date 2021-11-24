@@ -70,7 +70,6 @@ public class RandomGenerator {
 	
 	public String createPayload() throws IOException {
 		String payload= randomize(template);
-		System.out.println("Pushing Record " + payload+"testing");
 		return payload;
 	}
 

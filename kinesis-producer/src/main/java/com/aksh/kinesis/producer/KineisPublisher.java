@@ -73,6 +73,7 @@ class KineisPublisher {
 		int i = 0;
 		while (true) {
 			String payload = randomGenerator.createPayload();
+			System.out.println("KPL Push: " + payload);
 			ByteBuffer data = ByteBuffer.wrap(payload.getBytes("UTF-8"));
 			// doesn't block
 			kinesis.addUserRecord(streamName, partitionPrefix + i % 4, data);
@@ -92,6 +93,7 @@ class KineisPublisher {
 				String payload;
 				try {
 					payload = randomGenerator.createPayload();
+					System.out.println("SDK Push: " + payload);
 					PutRecordRequest req = PutRecordRequest.builder().streamName(streamName)
 							.data(SdkBytes.fromUtf8String(payload)).partitionKey(partitionPrefix +i%2 ).build();
 					client.putRecord(req);
