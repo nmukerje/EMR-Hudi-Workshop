@@ -32,7 +32,16 @@ hadoop dfs -copyFromLocal /usr/lib/hadoop/client/httpclient-4.5.9.jar hdfs:///
 timestamp has epoch value in seconds. 
 
 ```
-{"tradeId":"211124204181756","symbol":"GOOGL","quantity":"39","price":"39","timestamp":1637766663,"description":"Traded on Wed Nov 24 20:41:03 IST 2021","traderName":"GOOGL trader","traderFirm":"GOOGL firm"}
+{
+   "tradeId":"211124204181756",
+   "symbol":"GOOGL",
+   "quantity":"39",
+   "price":"39",
+   "timestamp":1637766663,
+   "description":"Traded on Wed Nov 24 20:41:03 IST 2021",
+   "traderName":"GOOGL trader",
+   "traderFirm":"GOOGL firm"
+}
 
 ```
 
