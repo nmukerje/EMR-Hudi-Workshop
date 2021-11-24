@@ -55,7 +55,7 @@ object SparkKinesisConsumerHudiProcessor {
 
   
     val streamingInputDF = (spark
-                    .readStream .format("kinesis") 
+                    .readStream.format("kinesis") 
                     .option("streamName", streamName) 
                     .option("startingposition", "TRIM_HORIZON")
                     .option("endpointUrl", endpointUrl)

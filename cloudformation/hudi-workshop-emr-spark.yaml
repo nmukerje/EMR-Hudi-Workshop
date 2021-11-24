@@ -82,12 +82,16 @@ Resources:
       VisibleToAllUsers: true
       Applications:
         - Name: Spark
+        - Name: Presto
         - Name: Hive
         - Name: Hadoop
         - Name: Tez
         - Name: Livy
         #AutoScalingRole: 'EMR_AutoScaling_DefaultRole'
       Configurations:
+        - Classification: presto-connector-hive
+          ConfigurationProperties:
+             "hive.metastore.glue.datacatalog.enabled": "true"
         #- Classification: spark
         #  ConfigurationProperties:
         #    "maximizeResourceAllocation": "true"
@@ -104,6 +108,10 @@ Resources:
           ConfigurationProperties:
              "hive.metastore.client.factory.class": "com.amazonaws.glue.catalog.metastore.AWSGlueDataCatalogHiveClientFactory"
       EbsRootVolumeSize: 32
+      #BootstrapActions:
+      #  - Name: setup-delta-lake
+      #    ScriptBootstrapAction:
+      #      Path: s3://aksh-test-versioning/delta/delta-init.sh
       Instances:
         AdditionalMasterSecurityGroups: [ !ImportValue WorkshopSecurityGroup ]
         AdditionalSlaveSecurityGroups: [ !ImportValue WorkshopSecurityGroup ]
@@ -125,8 +133,8 @@ Resources:
         #      - VolumeSpecification:
         #          SizeInGB: 100
         #          VolumeType: gp2
-        #  InstanceCount: 3
-        #  InstanceType: r4.8xlarge
+        #  InstanceCount: 2
+        #  InstanceType: r4.2xlarge
         #  Market: ON_DEMAND
         #  Name: 'Core instance group'
 

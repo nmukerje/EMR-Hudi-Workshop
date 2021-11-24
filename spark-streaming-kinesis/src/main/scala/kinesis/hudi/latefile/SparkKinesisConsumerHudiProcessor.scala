@@ -21,8 +21,8 @@ import java.text.SimpleDateFormat
 object SparkKinesisConsumerHudiProcessor {
 
   def epochToDate(epochMillis: String): Date = {
-    new Date(Long.valueOf(epochMillis))
-} 
+    new Date(epochMillis.toLong)
+  } 
 
   def main(args: Array[String]): Unit = {
     
