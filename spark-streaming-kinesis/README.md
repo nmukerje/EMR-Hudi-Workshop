@@ -9,14 +9,6 @@ cd /home/hadoop/rpms
 
 # Copy log4j settings
 sudo aws s3 cp s3://emr-workshops-us-west-2/hudi/scripts/log4j.properties /etc/spark/conf/
-# Copy Spark Jar
-aws s3 cp s3://emr-workshops-us-west-2/hudi/scripts/SparkKafkaConsumerHudiProcessor-assembly-1.0.jar /home/hadoop/
-
-# Copy libraries to hdfs
-hadoop fs -copyFromLocal /usr/lib/hudi/hudi-spark-bundle.jar hdfs:///
-hadoop fs -copyFromLocal /usr/lib/spark/external/lib/spark-avro.jar hdfs:///
-hadoop dfs -copyFromLocal /usr/lib/hudi/hudi-utilities-bundle.jar hdfs:///
-hadoop dfs -copyFromLocal /usr/lib/hadoop/client/httpclient-4.5.9.jar hdfs:///
 
 ```
 # Spark Submit Prerequisite
@@ -49,8 +41,12 @@ timestamp has epoch value in seconds.
 SSH to master node and then run the spark submit command.
 
 ```
-spark-submit --conf "spark.serializer=org.apache.spark.serializer.KryoSerializer" --conf "spark.sql.hive.convertMetastoreParquet=false" --conf "spk.dynamicAllocation.maxExecutors=10" --jars hdfs:///httpclient-4.5.9.jar,hdfs:///hudi-spark-bundle.jar,hdfs:///spark-avro.jar --packages org.apache.spark:spark-streaming-kinesis-asl_2.11:2.4.5,com.qubole.spark:spark-sql-kinesis_2.11:1.2.0_spark-2.4 --class kinesis.hudi.latefile.SparkKinesisConsumerHudiProcessor Spark-Structured-Streaming-Kinesis-Hudi-assembly-1.0.jar <bucket-name>  <stream-name> <region> <COW/MOR>
-
+spark-submit --conf "spark.serializer=org.apache.spark.serializer.KryoSerializer" --conf "spark.sql.hive.convertMetastoreParquet=false" --conf "spk.dynamicAllocation.maxExecutors=10" --jars /usr/lib/hudi/hudi-spark-bundle.jar,/usr/lib/spark/external/lib/spark-avro.jar  --packages org.apache.spark:spark-streaming-kinesis-asl_2.11:2.4.5,com.qubole.spark:spark-sql-kinesis_2.11:1.2.0_spark-2.4 --class kinesis.hudi.latefile.SparkKinesisConsumerHudiProcessor Spark-Structured-Streaming-Kinesis-Hudi-assembly-1.0.jar <bucket-name>  <stream-name> <region> <COW/MOR>
+```
+Example
+```
+spark-submit --conf "spark.serializer=org.apache.spark.serializer.KryoSerializer" --conf "spark.sql.hive.convertMetastoreParquet=false" --conf "spk.dynamicAllocation.maxExecutors=10" --jars /usr/lib/hudi/hudi-spark-bundle.jar,/usr/lib/spark/external/lib/spark-avro.jar  --packages org.apache.spark:spark-streaming-kinesis-asl_2.11:2.4.5,com.qubole.spark:spark-sql-kinesis_2.11:1.2.0_spark-2.4 --class kinesis.hudi.latefile.SparkKinesisConsumerHudiProcessor Spark-Structured-Streaming-Kinesis-Hudi-assembly-1.0.jar aksh-firehose-test hudi-stream-ingest us-west-2 COW
+	
 ```
 
 ## Spark Shell
