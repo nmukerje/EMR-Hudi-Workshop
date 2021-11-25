@@ -1,7 +1,7 @@
 
 # Prerequisites
 ## EMR Prerequisites
-1. Create EMR cluster with Spark, Hive , Hadoop, Tez and Livy enabled. Refer the template at cloudformation/hudi-workshop-emr-spark.yaml
+1. Create EMR cluster with Spark, Hive and Hadoop enabled. Refer the template at [cloudformation/hudi-workshop-emr-spark.yaml](../cloudformation/hudi-workshop-emr-spark.yaml) 
 2. SSH to master node and execute command to update log level to [log4j.rootCategory=WARN,console] --this is an optional step 
 
 ```
