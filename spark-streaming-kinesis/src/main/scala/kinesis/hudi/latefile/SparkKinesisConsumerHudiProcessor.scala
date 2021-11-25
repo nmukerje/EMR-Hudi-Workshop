@@ -1,5 +1,5 @@
 package kinesis.hudi.latefile
-
+// Copy to run from Spark Shell ---start 
 import org.apache.hudi.config.HoodieWriteConfig
 import org.apache.hudi.hive.MultiPartKeysValueExtractor
 import org.apache.hudi.DataSourceWriteOptions
@@ -16,7 +16,7 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.streaming.kinesis.KinesisInitialPositions
 import java.util.Date
 import java.text.SimpleDateFormat
-
+// Copy to run from Spark Shell ---end 
 
 object SparkKinesisConsumerHudiProcessor {
 
@@ -35,19 +35,21 @@ object SparkKinesisConsumerHudiProcessor {
           .enableHiveSupport()
           .getOrCreate()
     
+    // Copy to run from Spark Shell ---start 
     import spark.implicits._
-
-    val s3_bucket="akshaya-firehose-test"//args(0)//
-    val streamName="hudi-stream-ingest"//args(1)//
-    val region="us-west-2"//args(2)//
-    val tableType="COW"//args(3)//
-    var hudiTableName = "hudi_trade_info_cow"
+    // For Spark Shell -- hardcode these parameters
+    val s3_bucket=args(0)//"akshaya-firehose-test"//
+    val streamName=args(1)//"hudi-stream-ingest"//
+    val region=args(2)//"us-west-2"//
+    val tableType=args(3)//"COW"//
+    var hudiTableNamePrefix = args(4)//"hudi_trade_info"//
+    var hudiTableName=hudiTableNamePrefix+"_cow"
     var dsWriteOptionType=DataSourceWriteOptions.COW_STORAGE_TYPE_OPT_VAL
     if(tableType.equals("COW")){
-       hudiTableName = "hudi_trade_info_cow"
+       hudiTableName = hudiTableNamePrefix+"_cow"
        dsWriteOptionType=DataSourceWriteOptions.COW_STORAGE_TYPE_OPT_VAL
     }else if (tableType.equals("MOR")){
-      hudiTableName = "hudi_trade_info_mor"
+      hudiTableName = hudiTableNamePrefix+"_mor"
       dsWriteOptionType=DataSourceWriteOptions.MOR_STORAGE_TYPE_OPT_VAL
     }
 
@@ -56,9 +58,16 @@ object SparkKinesisConsumerHudiProcessor {
     val hudiTablePrecombineKey = "trade_datetime"
     val hudiTablePath = s"s3://$s3_bucket/hudi/" + hudiTableName
     val hudiHiveTablePartitionKey = "day,hour"
-    val checkpoint_path=s"s3://$s3_bucket/kinesis-stream-data-checkpoint/"
+    val checkpoint_path=s"s3://$s3_bucket/kinesis-stream-data-checkpoint/"+hudiTableName+"/"
     val endpointUrl=s"https://kinesis.$region.amazonaws.com"
 
+    println("hudiTableRecordKey:"+hudiTableRecordKey)
+    println("hudiTablePartitionKey:"+hudiTablePartitionKey)
+    println("hudiTablePrecombineKey:"+hudiTablePrecombineKey)
+    println("hudiTablePath:"+hudiTablePath)
+    println("hudiHiveTablePartitionKey:"+hudiHiveTablePartitionKey)
+    println("checkpoint_path:"+checkpoint_path)
+    println("endpointUrl:"+endpointUrl)
   
     val streamingInputDF = (spark
                     .readStream .format("kinesis") 
@@ -105,7 +114,7 @@ object SparkKinesisConsumerHudiProcessor {
                 parDF = parDF.withColumn(hudiTablePartitionKey,concat(lit("day="),$"day",lit("/hour="),$"hour"))
                 parDF.printSchema()
                 if(!parDF.rdd.isEmpty){
-                  parDF.select("day",hudiTableRecordKey,"quantity").show()
+                  parDF.select("day","hour",hudiTableRecordKey,"quantity").show()
                   parDF.write.format("org.apache.hudi")
                         .option("hoodie.datasource.write.table.type", dsWriteOptionType)
                         .option(DataSourceWriteOptions.RECORDKEY_FIELD_OPT_KEY, hudiTableRecordKey)
@@ -126,7 +135,7 @@ object SparkKinesisConsumerHudiProcessor {
                 
         
     }}.option("checkpointLocation", checkpoint_path).start())
-  
+  // Copy to run from Spark Shell ---end 
     query.awaitTermination()
 
   }

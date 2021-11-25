@@ -82,16 +82,13 @@ Resources:
       VisibleToAllUsers: true
       Applications:
         - Name: Spark
-        - Name: Presto
         - Name: Hive
         - Name: Hadoop
-        - Name: Tez
-        - Name: Livy
         #AutoScalingRole: 'EMR_AutoScaling_DefaultRole'
       Configurations:
-        - Classification: presto-connector-hive
-          ConfigurationProperties:
-             "hive.metastore.glue.datacatalog.enabled": "true"
+        #- Classification: presto-connector-hive
+        #  ConfigurationProperties:
+        #     "hive.metastore.glue.datacatalog.enabled": "true"
         #- Classification: spark
         #  ConfigurationProperties:
         #    "maximizeResourceAllocation": "true"
@@ -101,9 +98,6 @@ Resources:
         - Classification: hive-site
           ConfigurationProperties:
              "hive.metastore.client.factory.class": "com.amazonaws.glue.catalog.metastore.AWSGlueDataCatalogHiveClientFactory"
-        #- Classification: presto-connector-hive
-        #  ConfigurationProperties:
-        #    "hive.metastore.glue.datacatalog.enabled": "true"
         - Classification: spark-hive-site
           ConfigurationProperties:
              "hive.metastore.client.factory.class": "com.amazonaws.glue.catalog.metastore.AWSGlueDataCatalogHiveClientFactory"

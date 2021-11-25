@@ -1,5 +1,5 @@
 package kinesis.hudi
-
+// Copy to run from Spark Shell ---start 
 import org.apache.hudi.config.HoodieWriteConfig
 import org.apache.hudi.hive.MultiPartKeysValueExtractor
 import org.apache.hudi.DataSourceWriteOptions
@@ -14,7 +14,7 @@ import org.apache.spark.storage.StorageLevel
 import org.apache.spark.streaming.kinesis.KinesisInputDStream
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.streaming.kinesis.KinesisInitialPositions
-
+// Copy to run from Spark Shell ---end 
 object SparkKinesisConsumerHudiProcessor {
 
   def main(args: Array[String]): Unit = {
@@ -27,20 +27,21 @@ object SparkKinesisConsumerHudiProcessor {
           .config("spark.sql.shuffle.partitions", 9)
           .enableHiveSupport()
           .getOrCreate()
-    
+    // Copy to run from Spark Shell ---start 
     import spark.implicits._
-
+    // For Spark Shell -- hardcode these parameters
     val s3_bucket=args(0)//"hudi-workshop--2"//
     val streamName=args(1)//"hudi-stream-data"//
     val region=args(2)//"us-west-2"//
     val tableType=args(3)//"COW"//
-    var hudiTableName = "sales_order_detail_hudi_cow"
+    var hudiTableNamePrefix = args(4)//"sales_order_detail_hudi"//
+    var hudiTableName=hudiTableNamePrefix+"_cow"
     var dsWriteOptionType=DataSourceWriteOptions.COW_STORAGE_TYPE_OPT_VAL
     if(tableType.equals("COW")){
-       hudiTableName = "sales_order_detail_hudi_cow"
+       hudiTableName = hudiTableNamePrefix+"_cow"
        dsWriteOptionType=DataSourceWriteOptions.COW_STORAGE_TYPE_OPT_VAL
     }else if (tableType.equals("MOR")){
-      hudiTableName = "sales_order_detail_hudi_mor"
+      hudiTableName = hudiTableNamePrefix+"_mor"
       dsWriteOptionType=DataSourceWriteOptions.MOR_STORAGE_TYPE_OPT_VAL
     }
 
@@ -50,9 +51,16 @@ object SparkKinesisConsumerHudiProcessor {
     val hudiTablePrecombineKey = "order_date"
     val hudiTablePath = s"s3://$s3_bucket/hudi/" + hudiTableName
     val hudiHiveTablePartitionKey = "year,month"
-    val checkpoint_path=s"s3://$s3_bucket/kinesis-stream-data-checkpoint/"
+    val checkpoint_path=s"s3://$s3_bucket/kinesis-stream-data-checkpoint/"+hudiTableName+"/"
     val endpointUrl=s"https://kinesis.$region.amazonaws.com"
 
+    println("hudiTableRecordKey:"+hudiTableRecordKey)
+    println("hudiTablePartitionKey:"+hudiTablePartitionKey)
+    println("hudiTablePrecombineKey:"+hudiTablePrecombineKey)
+    println("hudiTablePath:"+hudiTablePath)
+    println("hudiHiveTablePartitionKey:"+hudiHiveTablePartitionKey)
+    println("checkpoint_path:"+checkpoint_path)
+    println("endpointUrl:"+endpointUrl)
   
     val streamingInputDF = (spark
                     .readStream.format("kinesis") 
@@ -124,7 +132,7 @@ object SparkKinesisConsumerHudiProcessor {
                 
         
     }}.option("checkpointLocation", checkpoint_path).start())
-  
+   // Copy to run from Spark Shell ---end 
     query.awaitTermination()
 
   }
