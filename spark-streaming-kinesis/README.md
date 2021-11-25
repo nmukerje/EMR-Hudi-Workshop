@@ -20,7 +20,7 @@ vi /etc/spark/conf/log4j.properties
    aws s3 cp s3://<S3-Bucket-Name>/Spark-Structured-Streaming-Kinesis-Hudi-assembly-1.0.jar .   
 ```
 
-# Use Case 1 - Events Published to Kinesis with simulation of later arriving events
+# Use Case 1 - Events Published to Kinesis with simulation of late arriving events
 ## Message Content pushed to the topic
 timestamp has epoch value in seconds. 
 
@@ -78,7 +78,7 @@ spark-shell \
 --packages org.apache.spark:spark-streaming-kinesis-asl_2.11:2.4.5,com.qubole.spark:spark-sql-kinesis_2.11:1.2.0_spark-2.4
 ```
 
-# Use Case 2 - CDC Published to Kinesis
+# Use Case 2 - Consume CDC events Published to Kinesis by DMS
     
 ## Message Content pushed to the topic
 DMS publishes the changes to Kineiss 
@@ -138,7 +138,7 @@ spark-shell \
 ```
 
 
-# Use Case 3 - CDC Published to S3. S3 event triggered Lambda pushes file path to Kinesis. 
+# Use Case 3 - CDC event Published to S3 by DMS. S3 event triggered Lambda pushes file path to Kinesis. 
 ## Message Content pushed to the topic
 The filePath here is the path to the file which got added to S3 by DMS. An S3 event gets published which is consumed by Lambda. The lambda then pushes the event below to the Kinesis stream which the file path of the file that got ingested. 
 ```
