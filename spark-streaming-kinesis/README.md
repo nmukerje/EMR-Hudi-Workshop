@@ -48,7 +48,7 @@ spark-submit \
 --jars /usr/lib/hudi/hudi-spark-bundle.jar,/usr/lib/spark/external/lib/spark-avro.jar \
 --packages org.apache.spark:spark-streaming-kinesis-asl_2.11:2.4.5,com.qubole.spark:spark-sql-kinesis_2.11:1.2.0_spark-2.4 \
 --class kinesis.hudi.latefile.SparkKinesisConsumerHudiProcessor Spark-Structured-Streaming-Kinesis-Hudi-assembly-1.0.jar \
-<bucket-name>  <stream-name> <region> <COW/MOR>
+<bucket-name>  <stream-name> <region> <COW/MOR> <table_name>
 ```
 Example
 ```
@@ -59,7 +59,7 @@ spark-submit \
 --jars /usr/lib/hudi/hudi-spark-bundle.jar,/usr/lib/spark/external/lib/spark-avro.jar \
 --packages org.apache.spark:spark-streaming-kinesis-asl_2.11:2.4.5,com.qubole.spark:spark-sql-kinesis_2.11:1.2.0_spark-2.4 \
 --class kinesis.hudi.latefile.SparkKinesisConsumerHudiProcessor Spark-Structured-Streaming-Kinesis-Hudi-assembly-1.0.jar \
-aksh-firehose-test hudi-stream-ingest us-west-2 COW
+aksh-firehose-test hudi-stream-ingest us-west-2 COW trade_event_late_simulation
 	
 	
 ```
@@ -116,7 +116,7 @@ spark-submit \
 --jars /usr/lib/hudi/hudi-spark-bundle.jar,/usr/lib/spark/external/lib/spark-avro.jar \
 --packages org.apache.spark:spark-streaming-kinesis-asl_2.11:2.4.5,com.qubole.spark:spark-sql-kinesis_2.11:1.2.0_spark-2.4 \
 --class kinesis.hudi.SparkKinesisConsumerHudiProcessor Spark-Structured-Streaming-Kinesis-Hudi-assembly-1.0.jar \
-<bucket-name>  <stream-name> <region> <COW/MOR>
+<bucket-name>  <stream-name> <region> <COW/MOR> <table_name>
 	
 
 ```
@@ -152,7 +152,7 @@ spark-submit \
 --jars /usr/lib/hudi/hudi-spark-bundle.jar,/usr/lib/spark/external/lib/spark-avro.jar \
 --packages org.apache.spark:spark-streaming-kinesis-asl_2.11:2.4.5,com.qubole.spark:spark-sql-kinesis_2.11:1.2.0_spark-2.4 \
 --class kinesis.hudi.SparkKinesisFilePathConsumerHudiProcessor Spark-Structured-Streaming-Kinesis-Hudi-assembly-1.0.jar \
-<bucket-name>  <stream-name> <region> <COW/MOR>
+<bucket-name>  <stream-name> <region> <COW/MOR> <table_name>
 	
 
 ```
