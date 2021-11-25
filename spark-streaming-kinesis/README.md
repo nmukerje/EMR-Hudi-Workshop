@@ -68,7 +68,7 @@ aksh-firehose-test hudi-stream-ingest us-west-2 COW trade_event_late_simulation
 ```
 
 ## Spark Shell
-Run the shell with command below and copy paste from  spark-streaming-kinesis/src/main/scala/kinesis/hudi/latefile/spark-shell-commands.txt
+Run the shell with command below and copy paste code from   [kinesis.hudi.latefile.SparkKinesisConsumerHudiProcessor](src/main/scala/kinesis/hudi/latefile/SparkKinesisConsumerHudiProcessor.scala). The code that needs to be copied is between  (Spark Shell ---Start ) and (Spark Shell ---End ). Also ensure that the you hard code the paremeters like s3_bucket, streamName, region ,tableType and hudiTableNamePrefix.  
 
 ```
 spark-shell \
@@ -126,6 +126,7 @@ spark-submit \
 
 ```
 ## Spark Shell
+Run the shell with command below and copy paste code from   [kinesis.hudi.SparkKinesisConsumerHudiProcessor](src/main/scala/kinesis/hudi/SparkKinesisConsumerHudiProcessor.scala). The code that needs to be copied is between  (Spark Shell ---Start ) and (Spark Shell ---End ). Also ensure that the you hard code the paremeters like s3_bucket, streamName, region ,tableType and hudiTableNamePrefix.  
 
 ```
 spark-shell \
@@ -165,6 +166,9 @@ spark-submit \
 ```
 
 ## Spark Shell
+
+Run the shell with command below and copy paste code from   [kinesis.hudi.SparkKinesisFilePathConsumerHudiProcessor](src/main/scala/kinesis/hudi/SparkKinesisFilePathConsumerHudiProcessor.scala). The code that needs to be copied is between  (Spark Shell ---Start ) and (Spark Shell ---End ). Also ensure that the you hard code the paremeters like s3_bucket, streamName, region ,tableType and hudiTableNamePrefix.  
+
 ```
 
 spark-shell \
