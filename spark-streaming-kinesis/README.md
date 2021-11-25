@@ -1,5 +1,6 @@
 
-# EMR Prerequisite
+# Prerequisites
+## EMR Prerequisites
 1. Create EMR cluster with Spark, Hive , Hadoop, Tez and Livy enabled. Refer the template at cloudformation/hudi-workshop-emr-spark.yaml
 2. SSH to master node and execute command to update log level to [log4j.rootCategory=WARN,console] --this is an optional step 
 
@@ -7,7 +8,7 @@
 vi /etc/spark/conf/log4j.properties 
 
 ```
-# Spark Submit Prerequisite
+## Spark Submit Prerequisite
 1. Build and copy jar by running spark-streaming-kinesis/build.sh. 
 ```
 ./build.sh <S3-Bucket-Name>
@@ -37,7 +38,7 @@ timestamp has epoch value in seconds.
 
 ```
 ## Spark Scala Code
-[kinesis.hudi.latefile.SparkKinesisConsumerHudiProcessor](src/main/scala/kinesis/hudi/SparkKinesisConsumerHudiProcessor.scala)
+[kinesis.hudi.latefile.SparkKinesisConsumerHudiProcessor](src/main/scala/kinesis/hudi/latefile/SparkKinesisConsumerHudiProcessor.scala)
 
 ## Spark Submit 
 SSH to master node and then run the spark submit command.
@@ -106,6 +107,8 @@ DMS publishes the changes to Kineiss
 		}
 } 
 ```
+## Spark Scala Code
+[kinesis.hudi.SparkKinesisConsumerHudiProcessor](src/main/scala/kinesis/hudi/SparkKinesisConsumerHudiProcessor.scala)
 
 ## Spark Submit 
 
@@ -142,6 +145,8 @@ The filePath here is the path to the file which got added to S3 by DMS. An S3 ev
     "filePath": "s3://<bucket-name>/dms-full-load-path/salesdb/SALES_ORDER_DETAIL/20211118-100428844.parquet"
 }
 ```
+## Spark Scala Code
+[kinesis.hudi.SparkKinesisFilePathConsumerHudiProcessor](src/main/scala/kinesis/hudi/SparkKinesisFilePathConsumerHudiProcessor.scala)
 
 ## Spark Submit 
     
