@@ -36,6 +36,8 @@ timestamp has epoch value in seconds.
 }
 
 ```
+## Spark Scala Code
+[kinesis.hudi.latefile.SparkKinesisConsumerHudiProcessor](src/main/scala/kinesis/hudi/SparkKinesisConsumerHudiProcessor)
 
 ## Spark Submit 
 SSH to master node and then run the spark submit command.
