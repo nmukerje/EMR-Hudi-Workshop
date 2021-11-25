@@ -1,22 +1,22 @@
 
 # EMR Prerequisite
 1. Create EMR cluster with Spark, Hive , Hadoop, Tez and Livy enabled. Refer the template at cloudformation/hudi-workshop-emr-spark.yaml
-2. SSH to master node and execute command to copy Jars 
+2. SSH to master node and execute command to update log level to [log4j.rootCategory=WARN,console] --this is an optional step 
 
 ```
-mkdir -p /home/hadoop/rpms
-cd /home/hadoop/rpms
-
-# Copy log4j settings
-sudo aws s3 cp s3://emr-workshops-us-west-2/hudi/scripts/log4j.properties /etc/spark/conf/
+vi /etc/spark/conf/log4j.properties 
 
 ```
 # Spark Submit Prerequisite
-1. Build and copy jar by running spark-streaming-kinesis/build.sh. ./build.sh <S3-Bucket-Name>
+1. Build and copy jar by running spark-streaming-kinesis/build.sh. 
+```
+./build.sh <S3-Bucket-Name>
+```
+
 2. SSH to master node and copy jar which was pushed to S3.
     
 ```
-   aws s3 cp s3://<build-jar-bucket>/Spark-Structured-Streaming-Kinesis-Hudi-assembly-1.0.jar .   
+   aws s3 cp s3://<S3-Bucket-Name>/Spark-Structured-Streaming-Kinesis-Hudi-assembly-1.0.jar .   
 ```
 
 # Use Case 1 - Events Published to Kinesis with simulation of later arriving events
