@@ -15,6 +15,39 @@ import org.apache.spark.streaming.kinesis.KinesisInputDStream
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.streaming.kinesis.KinesisInitialPositions
 // Copy to run from Spark Shell ---end 
+/**
+  The file consumes messages pushed to Kinesis from DMS. The message content look like 
+  {
+		"data": {
+		"LINE_ID": 144611,
+		"LINE_NUMBER": 1,
+		"ORDER_ID": 11363,
+		"PRODUCT_ID": 927,
+		"QUANTITY": 142,
+		"UNIT_PRICE": 36,
+		"DISCOUNT": 3,
+		"SUPPLY_COST": 15,
+		"TAX": 0,
+		"ORDER_DATE": "2015-10-17"
+		},
+		"metadata": {
+		"timestamp": "2021-11-19T13:24:43.297344Z",
+		"record-type": "data",
+		"operation": "update",
+		"partition-key-type": "schema-table",
+		"schema-name": "salesdb",
+		"table-name": "SALES_ORDER_DETAIL",
+		"transaction-id": 47330445004
+		}
+} 
+ The parameters expected are -
+  s3_bucket  Ex. <akshaya-firehose-test>
+  streamName Ex. <hudi-stream-ingest>
+  region Ex. <us-west-2>
+  tableType Ex. <COW/MOR>
+  hudiTableNamePrefix Ex. <hudi_trade_info>
+
+*/
 object SparkKinesisConsumerHudiProcessor {
 
   def main(args: Array[String]): Unit = {

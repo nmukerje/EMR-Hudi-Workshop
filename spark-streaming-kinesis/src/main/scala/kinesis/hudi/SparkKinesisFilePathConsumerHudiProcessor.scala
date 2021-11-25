@@ -15,6 +15,19 @@ import org.apache.spark.streaming.kinesis.KinesisInputDStream
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.streaming.kinesis.KinesisInitialPositions
 // Copy to run from Spark Shell ---end 
+/**
+  The file consumes messages that contains S3 path to CDC pushed to S3 from DMS. The message content look like 
+  {
+    "filePath": "s3://<bucket-name>/dms-full-load-path/salesdb/SALES_ORDER_DETAIL/20211118-100428844.parquet"
+  }
+ The parameters expected are -
+  s3_bucket  Ex. <akshaya-firehose-test>
+  streamName Ex. <hudi-stream-ingest>
+  region Ex. <us-west-2>
+  tableType Ex. <COW/MOR>
+  hudiTableNamePrefix Ex. <hudi_trade_info>
+
+*/
 object SparkKinesisFilePathConsumerHudiProcessor {
 
   def main(args: Array[String]): Unit = {

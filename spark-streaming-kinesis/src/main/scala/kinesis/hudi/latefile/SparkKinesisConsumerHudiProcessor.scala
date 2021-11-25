@@ -1,5 +1,5 @@
 package kinesis.hudi.latefile
-// Copy to run from Spark Shell ---start 
+// Spark Shell ---start 
 import org.apache.hudi.config.HoodieWriteConfig
 import org.apache.hudi.hive.MultiPartKeysValueExtractor
 import org.apache.hudi.DataSourceWriteOptions
@@ -16,8 +16,27 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.streaming.kinesis.KinesisInitialPositions
 import java.util.Date
 import java.text.SimpleDateFormat
-// Copy to run from Spark Shell ---end 
+// Spark Shell ---end 
+/**
+  The file consumes messages pushed to Kinesis. The message content look like 
+  {
+   "tradeId":"211124204181756",
+   "symbol":"GOOGL",
+   "quantity":"39",
+   "price":"39",
+   "timestamp":1637766663,
+   "description":"Traded on Wed Nov 24 20:41:03 IST 2021",
+   "traderName":"GOOGL trader",
+   "traderFirm":"GOOGL firm"
+ }
+ The parameters expected are -
+  s3_bucket  Ex. <akshaya-firehose-test>
+  streamName Ex. <hudi-stream-ingest>
+  region Ex. <us-west-2>
+  tableType Ex. <COW/MOR>
+  hudiTableNamePrefix Ex. <hudi_trade_info>
 
+*/
 object SparkKinesisConsumerHudiProcessor {
 
   def epochToDate(epochMillis: String): Date = {
@@ -35,9 +54,9 @@ object SparkKinesisConsumerHudiProcessor {
           .enableHiveSupport()
           .getOrCreate()
     
-    // Copy to run from Spark Shell ---start 
+    // Spark Shell ---start 
     import spark.implicits._
-    // For Spark Shell -- hardcode these parameters
+    // Spark Shell -- hardcode these parameters
     val s3_bucket=args(0)//"akshaya-firehose-test"//
     val streamName=args(1)//"hudi-stream-ingest"//
     val region=args(2)//"us-west-2"//
@@ -135,7 +154,7 @@ object SparkKinesisConsumerHudiProcessor {
                 
         
     }}.option("checkpointLocation", checkpoint_path).start())
-  // Copy to run from Spark Shell ---end 
+  // Spark Shell ---end 
     query.awaitTermination()
 
   }
