@@ -94,10 +94,7 @@ object SparkKinesisConsumerHudiProcessor {
                     .option("startingposition", "TRIM_HORIZON")
                     .option("endpointUrl", endpointUrl)
                     .load())
- /** {"tradeId":"211119210207735","symbol":"INFY","quantity":"41",
- "price":"41","timestamp":1637335954,"description":"Traded o",
- "traderName":"INFY trader","traderFirm":"firm"}
- */
+ 
     val decimalType = DataTypes.createDecimalType(38, 10)
     val dataSchema=StructType(Array(
         StructField("tradeId",StringType,true),
