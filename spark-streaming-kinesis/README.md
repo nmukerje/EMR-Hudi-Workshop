@@ -17,7 +17,7 @@ vi /etc/spark/conf/log4j.properties
 2. SSH to master node and copy jar which was pushed to S3.
     
 ```
-   aws s3 cp s3://<S3-Bucket-Name>/Spark-Structured-Streaming-Kinesis-Hudi-assembly-1.0.jar .   
+   aws s3 cp s3://<S3-Bucket-Name>/spark-structured-streaming-kinesis-hudi_2.11-1.0.jar .   
 ```
 
 # Use Case 1 - Events Published to Kinesis with simulation of late arriving events
@@ -39,6 +39,7 @@ timestamp has epoch value in seconds.
 ```
 ## Spark Scala Code
 [kinesis.hudi.latefile.SparkKinesisConsumerHudiProcessor](src/main/scala/kinesis/hudi/latefile/SparkKinesisConsumerHudiProcessor.scala)
+[kinesis.hudi.latefile.SparkKinesisConsumerHudiProcessorNoSchema](src/main/scala/kinesis/hudi/latefile/SparkKinesisConsumerHudiProcessorNoSchema.scala)
 
 ## Spark Submit 
 SSH to master node and then run the spark submit command.
@@ -50,8 +51,8 @@ spark-submit \
 --conf "spk.dynamicAllocation.maxExecutors=10" \
 --jars /usr/lib/hudi/hudi-spark-bundle.jar,/usr/lib/spark/external/lib/spark-avro.jar \
 --packages org.apache.spark:spark-streaming-kinesis-asl_2.11:2.4.5,com.qubole.spark:spark-sql-kinesis_2.11:1.2.0_spark-2.4 \
---class kinesis.hudi.latefile.SparkKinesisConsumerHudiProcessor Spark-Structured-Streaming-Kinesis-Hudi-assembly-1.0.jar \
-<bucket-name>  <stream-name> <region> <COW/MOR> <table_name>
+--class kinesis.hudi.latefile.SparkKinesisConsumerHudiProcessorNoSchema spark-structured-streaming-kinesis-hudi_2.11-1.0.jar \
+<bucket-name>  <stream-name> <region> <COW/MOR> <table_name> <LATEST/TRIM_HORIZON>
 ```
 Example
 ```
@@ -61,8 +62,8 @@ spark-submit \
 --conf "spk.dynamicAllocation.maxExecutors=10" \
 --jars /usr/lib/hudi/hudi-spark-bundle.jar,/usr/lib/spark/external/lib/spark-avro.jar \
 --packages org.apache.spark:spark-streaming-kinesis-asl_2.11:2.4.5,com.qubole.spark:spark-sql-kinesis_2.11:1.2.0_spark-2.4 \
---class kinesis.hudi.latefile.SparkKinesisConsumerHudiProcessor Spark-Structured-Streaming-Kinesis-Hudi-assembly-1.0.jar \
-aksh-firehose-test hudi-stream-ingest us-west-2 COW trade_event_late_simulation
+--class kinesis.hudi.latefile.SparkKinesisConsumerHudiProcessorNoSchema spark-structured-streaming-kinesis-hudi_2.11-1.0.jar \
+akshaya-firehose-test data-stream-ingest ap-south-1 COW trade_event_late_simulation_ns LATEST
 	
 	
 ```
@@ -120,7 +121,7 @@ spark-submit \
 --conf "spk.dynamicAllocation.maxExecutors=10" \
 --jars /usr/lib/hudi/hudi-spark-bundle.jar,/usr/lib/spark/external/lib/spark-avro.jar \
 --packages org.apache.spark:spark-streaming-kinesis-asl_2.11:2.4.5,com.qubole.spark:spark-sql-kinesis_2.11:1.2.0_spark-2.4 \
---class kinesis.hudi.SparkKinesisConsumerHudiProcessor Spark-Structured-Streaming-Kinesis-Hudi-assembly-1.0.jar \
+--class kinesis.hudi.SparkKinesisConsumerHudiProcessor spark-structured-streaming-kinesis-hudi_2.11-1.0.jar \
 <bucket-name>  <stream-name> <region> <COW/MOR> <table_name>
 	
 
@@ -159,7 +160,7 @@ spark-submit \
 --conf "spk.dynamicAllocation.maxExecutors=10" \
 --jars /usr/lib/hudi/hudi-spark-bundle.jar,/usr/lib/spark/external/lib/spark-avro.jar \
 --packages org.apache.spark:spark-streaming-kinesis-asl_2.11:2.4.5,com.qubole.spark:spark-sql-kinesis_2.11:1.2.0_spark-2.4 \
---class kinesis.hudi.SparkKinesisFilePathConsumerHudiProcessor Spark-Structured-Streaming-Kinesis-Hudi-assembly-1.0.jar \
+--class kinesis.hudi.SparkKinesisFilePathConsumerHudiProcessor spark-structured-streaming-kinesis-hudi_2.11-1.0.jar \
 <bucket-name>  <stream-name> <region> <COW/MOR> <table_name>
 	
 

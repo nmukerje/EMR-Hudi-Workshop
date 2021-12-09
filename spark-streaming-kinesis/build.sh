@@ -6,5 +6,4 @@ then
 fi
 
 sbt clean package
-sbt assembly
-aws s3 cp target/scala-2.11/Spark-Structured-Streaming-Kinesis-Hudi-assembly-1.0.jar s3://$S3_BUCKET/
+aws s3 cp target/scala-2.11/spark-structured-streaming-kinesis-hudi_2.11-1.0.jar  s3://$S3_BUCKET/
